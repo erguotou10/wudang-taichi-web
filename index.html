@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1008">
+  <title>武当太极导览</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/guide.css">
+  <link rel="stylesheet" href="css/teach.css">
+  <link rel="stylesheet" href="css/mine.css">
+
+  <!-- Leaflet (for guide map) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Three.js import map -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+
+<div class="app">
+  <div class="status-bar" id="status-title">武当太极导览</div>
+
+  <div class="page-container" id="page-content">
+    <!-- 页面内容由 JS 动态渲染 -->
+  </div>
+
+  <div class="tab-bar" id="tab-bar">
+    <div class="tab-item active" data-route="/home" data-icon="home">
+      <div class="tab-icon"><img src="assets/images/tabs/home-active.png" alt=""></div>
+      <span class="tab-label">首页</span>
+    </div>
+    <div class="tab-item" data-route="/guide" data-icon="guide">
+      <div class="tab-icon"><img src="assets/images/tabs/guide.png" alt=""></div>
+      <span class="tab-label">导览</span>
+    </div>
+    <div class="tab-item" data-route="/teach" data-icon="teach">
+      <div class="tab-icon"><img src="assets/images/tabs/teach.png" alt=""></div>
+      <span class="tab-label">教学</span>
+    </div>
+    <div class="tab-item" data-route="/mine" data-icon="mine">
+      <div class="tab-icon"><img src="assets/images/tabs/mine.png" alt=""></div>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,158 @@
+/* Home Header */
+.home-header {
+  background: linear-gradient(160deg, #1a1008 0%, #2a1a0e 40%, #3d2415 100%);
+  padding: 0 16px 20px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.home-header::after {
+  content: ''; position: absolute; bottom: -30px; right: -20px;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,165,116,0.08) 0%, transparent 70%);
+}
+.header-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
+.logo { font-size: 18px; font-weight: 700; letter-spacing: 2px; }
+.logo span { color: #d4a574; }
+.search-box {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px; padding: 7px 14px; font-size: 13px;
+  color: rgba(255,255,255,0.35); display: flex; align-items: center; gap: 6px;
+  transition: background 0.2s;
+}
+.search-box:active { background: rgba(255,255,255,0.12); }
+.search-box svg { flex-shrink: 0; }
+
+/* Banner */
+.banner {
+  margin: 0 16px; border-radius: 14px; overflow: hidden;
+  height: 155px; position: relative;
+  background: linear-gradient(135deg, #2d5a3d 0%, #1a3a2a 60%, #0f2818 100%);
+}
+.banner::before {
+  content: ''; position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.banner-slides { position: absolute; inset: 0; }
+.banner-slide {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  justify-content: flex-end; padding: 20px; color: #fff; z-index: 1;
+  opacity: 0; transition: opacity 0.5s;
+}
+.banner-slide.active { opacity: 1; }
+.banner-tag { background: #b8322a; font-size: 10px; padding: 3px 10px; border-radius: 10px; display: inline-block; width: fit-content; margin-bottom: 8px; letter-spacing: 1px; }
+.banner-title { font-size: 21px; font-weight: 700; margin-bottom: 4px; letter-spacing: 1px; }
+.banner-desc { font-size: 12px; opacity: 0.75; }
+.banner-dots { position: absolute; bottom: 12px; right: 16px; display: flex; gap: 6px; z-index: 1; }
+.banner-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; }
+.banner-dot.active { background: #fff; width: 18px; border-radius: 3px; }
+/* Banner taiji decoration — CSS drawn yin-yang symbol */
+.banner-deco-taiji {
+  position: absolute; top: 12px; right: 14px;
+  width: 80px; height: 80px; opacity: 0.08; z-index: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #fff 0deg, #fff 180deg, #d4a574 180deg, #d4a574 360deg);
+  box-shadow: inset -18px 0 0 0 #1a3a2a, inset 18px 0 0 0 #fff;
+}
+.banner-deco-taiji::before,
+.banner-deco-taiji::after {
+  content: ''; position: absolute; border-radius: 50%;
+}
+.banner-deco-taiji::before {
+  width: 20px; height: 20px; top: 10px; left: 50%; transform: translateX(-50%);
+  background: #fff; box-shadow: inset 0 0 0 6px #1a3a2a;
+}
+.banner-deco-taiji::after {
+  width: 20px; height: 20px; bottom: 10px; left: 50%; transform: translateX(-50%);
+  background: #1a3a2a; box-shadow: inset 0 0 0 6px #fff;
+}
+
+/* Quick Entry */
+.quick-entry { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 16px; }
+.quick-entry-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
+.quick-entry-icon {
+  width: 50px; height: 50px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.2s;
+}
+.quick-entry-icon svg {
+  width: 24px; height: 24px;
+}
+.qe-map svg { color: #4a7fb5; }
+.qe-teach svg { color: #c4863a; }
+.qe-culture svg { color: #4a9f6b; }
+.qe-checkin svg { color: #c45a5a; }
+.quick-entry-item:active .quick-entry-icon { transform: scale(0.92); }
+.qe-map { background: linear-gradient(135deg, #e8f0f8, #d8e6f2); }
+.qe-teach { background: linear-gradient(135deg, #fef5e8, #f8e8d0); }
+.qe-culture { background: linear-gradient(135deg, #e8f5ee, #d0ead8); }
+.qe-checkin { background: linear-gradient(135deg, #fde8e8, #f5d0d0); }
+.quick-entry-label { font-size: 12px; color: #6b5e52; }
+
+/* Move Scroll */
+.move-scroll {
+  display: flex; gap: 12px; overflow-x: auto;
+  padding: 0 16px 12px; scroll-snap-type: x mandatory;
+  -ms-overflow-style: none; scrollbar-width: none;
+}
+.move-scroll::-webkit-scrollbar { display: none; }
+.move-card {
+  min-width: 130px; border-radius: 12px; overflow: hidden;
+  background: #fff; box-shadow: 0 2px 12px rgba(26,16,8,0.06);
+  scroll-snap-align: start; cursor: pointer; flex-shrink: 0;
+}
+.move-card-img {
+  height: 95px; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+/* Large Chinese character as card visual */
+.move-card-char {
+  font-size: 42px; font-weight: 900; letter-spacing: -2px;
+  opacity: 0.85; user-select: none;
+  font-family: "STKaiti", "KaiTi", "Noto Serif SC", serif;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  position: relative; z-index: 1;
+}
+/* Decorative ring behind the character */
+.move-card-ring {
+  position: absolute; width: 64px; height: 64px;
+  border: 2px solid rgba(255,255,255,0.1); border-radius: 50%;
+  z-index: 0;
+}
+.move-card-ring::after {
+  content: ''; position: absolute; inset: 6px;
+  border: 1px solid rgba(255,255,255,0.06); border-radius: 50%;
+}
+.move-badge {
+  position: absolute; top: 8px; left: 8px;
+  background: rgba(16,10,4,0.55); color: #fff;
+  font-size: 10px; padding: 3px 8px; border-radius: 8px;
+  backdrop-filter: blur(4px); z-index: 2;
+}
+.move-card-info { padding: 10px; }
+.move-card-name { font-size: 14px; font-weight: 600; color: #1a1008; margin-bottom: 4px; }
+.move-card-stars { font-size: 10px; color: #d4a574; letter-spacing: 2px; }
+
+/* Checkin Status */
+.checkin-status {
+  margin: 0 16px 16px;
+  background: linear-gradient(135deg, #1a1008 0%, #2a1a0e 50%, #3d2415 100%);
+  border-radius: 14px; padding: 18px; color: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative; overflow: hidden;
+}
+.checkin-status::after {
+  content: ''; position: absolute; top: -20px; right: -20px;
+  width: 100px; height: 100px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,165,116,0.1) 0%, transparent 70%);
+}
+.checkin-info .checkin-label { font-size: 13px; opacity: 0.6; margin-bottom: 4px; }
+.checkin-info .checkin-days { font-size: 20px; font-weight: 700; }
+.checkin-info .checkin-days span { color: #d4a574; font-size: 13px; font-weight: 400; }
+.checkin-btn {
+  background: linear-gradient(135deg, #b8322a, #942820);
+  color: #fff; border: none; border-radius: 22px;
+  padding: 10px 26px; font-size: 14px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(184,50,42,0.35); position: relative; z-index: 1;
+}
