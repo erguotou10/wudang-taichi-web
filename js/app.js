@@ -7,6 +7,11 @@ import { renderGuide, destroyGuide } from './pages/guide.js';
 import { renderTeachIndex } from './pages/teach-index.js';
 import { renderTeachDetail, destroyTeachDetail } from './pages/teach-detail.js';
 import { renderMine } from './pages/mine.js';
+import { renderCulture, destroyCulture, renderCultureDetail, destroyCultureDetail } from './pages/culture.js';
+import { renderCheckin, destroyCheckin } from './pages/checkin.js';
+import { renderBadges, destroyBadges, renderPlan, destroyPlan, renderFavorites, destroyFavorites, renderSettings, destroySettings } from './pages/mine-pages.js';
+import { renderSearch, destroySearch } from './pages/search.js';
+import { renderCommunity, destroyCommunity, renderCommunityDetail, destroyCommunityDetail, renderPublish, destroyPublish, renderMyPosts, destroyMyPosts } from './pages/community.js';
 
 // 页面注册表
 const PAGES = {
@@ -16,6 +21,18 @@ const PAGES = {
   '/teach':    { render: renderTeachIndex,  destroy: null,               tab: 2, title: '太极教学' },
   '/teach/detail': { render: renderTeachDetail, destroy: destroyTeachDetail, tab: -1, title: '招式详情' },
   '/mine':     { render: renderMine,        destroy: null,               tab: 3, title: '我的' },
+  '/culture':        { render: renderCulture,       destroy: destroyCulture,        tab: -1, title: '武当文化' },
+  '/culture/detail': { render: renderCultureDetail, destroy: destroyCultureDetail,  tab: -1, title: '文章详情' },
+  '/checkin':        { render: renderCheckin,       destroy: destroyCheckin,        tab: -1, title: '每日打卡' },
+  '/mine/badges':    { render: renderBadges,        destroy: destroyBadges,         tab: -1, title: '成就徽章' },
+  '/mine/plan':      { render: renderPlan,          destroy: destroyPlan,           tab: -1, title: '学习计划' },
+  '/mine/favorites': { render: renderFavorites,     destroy: destroyFavorites,      tab: -1, title: '招式收藏' },
+  '/mine/settings':  { render: renderSettings,      destroy: destroySettings,       tab: -1, title: '设置' },
+  '/search':         { render: renderSearch,         destroy: destroySearch,         tab: -1, title: '搜索' },
+  '/community':           { render: renderCommunity,       destroy: destroyCommunity,       tab: -1, title: '社区动态' },
+  '/community/detail':    { render: renderCommunityDetail, destroy: destroyCommunityDetail, tab: -1, title: '动态详情' },
+  '/community/publish':   { render: renderPublish,         destroy: destroyPublish,         tab: -1, title: '发布动态' },
+  '/mine/posts':          { render: renderMyPosts,         destroy: destroyMyPosts,         tab: -1, title: '我的动态' },
 };
 
 let currentPath = null;

@@ -73,3 +73,101 @@
 .menu-label { flex: 1; font-size: 14px; color: #3d3028; }
 .menu-arrow { color: #d8cfc5; display: flex; align-items: center; }
 .menu-badge { background: #b8322a; color: #fff; font-size: 10px; padding: 2px 7px; border-radius: 10px; margin-right: 8px; }
+
+/* Badges */
+.badges-header {
+  background: linear-gradient(160deg, #1a1008 0%, #2a1a0e 40%, #3d2415 100%);
+  padding: 24px 16px; text-align: center; color: #fff;
+}
+.badges-count { font-size: 36px; font-weight: 800; color: #d4a574; }
+.badges-label { font-size: 13px; opacity: 0.5; margin-top: 4px; }
+.badges-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  padding: 16px;
+}
+.badge-item {
+  background: #fff; border-radius: 14px; padding: 14px 8px;
+  text-align: center; box-shadow: 0 2px 8px rgba(26,16,8,0.05);
+  position: relative;
+}
+.badge-item.locked { opacity: 0.4; }
+.badge-item .badge-icon { font-size: 28px; margin-bottom: 6px; }
+.badge-item .badge-name { font-size: 11px; color: #6b5e52; }
+.badge-lock {
+  position: absolute; top: 6px; right: 6px;
+  color: #a09080;
+}
+
+/* Learning Plan */
+.plan-list { padding: 12px 16px; }
+.plan-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px; background: #fff; border-radius: 12px;
+  margin-bottom: 8px; box-shadow: 0 1px 6px rgba(26,16,8,0.04);
+  cursor: pointer;
+}
+.plan-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, #b8322a, #942820);
+  color: #fff; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.plan-info { flex: 1; }
+.plan-name { font-size: 14px; font-weight: 600; color: #1a1008; }
+.plan-meta { font-size: 12px; color: #a09080; margin-top: 2px; }
+.plan-remove { color: #ccc; cursor: pointer; padding: 4px; }
+.plan-remove:active { color: #e74c3c; }
+
+/* Favorites */
+.fav-list { padding: 12px 16px; }
+.fav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px; background: #fff; border-radius: 12px;
+  margin-bottom: 8px; box-shadow: 0 1px 6px rgba(26,16,8,0.04);
+  cursor: pointer;
+}
+.fav-info { flex: 1; }
+.fav-name { font-size: 14px; font-weight: 600; color: #1a1008; }
+.fav-meta { font-size: 12px; color: #a09080; margin-top: 2px; }
+
+/* Empty State */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 20px; text-align: center;
+}
+.empty-text { font-size: 15px; font-weight: 600; color: #6b5e52; margin-top: 16px; }
+.empty-sub { font-size: 13px; color: #a09080; margin-top: 6px; }
+
+/* Settings Page */
+.settings-section { margin: 16px; }
+.settings-section-title { font-size: 12px; color: #a09080; margin-bottom: 8px; padding-left: 4px; text-transform: uppercase; letter-spacing: 1px; }
+.settings-item {
+  display: flex; align-items: center; padding: 14px 16px;
+  background: #fff; cursor: pointer; transition: background 0.15s;
+}
+.settings-item:first-of-type { border-radius: 12px 12px 0 0; }
+.settings-item:last-of-type { border-radius: 0 0 12px 12px; }
+.settings-item:only-of-type { border-radius: 12px; }
+.settings-item:not(:last-of-type) { border-bottom: 1px solid #ede8e2; }
+.settings-item:active { background: #f5f0eb; }
+.settings-label { flex: 1; font-size: 14px; color: #3d3028; }
+.settings-value { font-size: 13px; color: #a09080; margin-right: 8px; }
+
+/* Toggle Switch */
+.settings-switch { position: relative; width: 44px; height: 24px; display: inline-block; }
+.settings-switch input { opacity: 0; width: 0; height: 0; }
+.settings-switch-slider {
+  position: absolute; inset: 0; background: #d8cfc5; border-radius: 12px;
+  transition: background 0.3s; cursor: pointer;
+}
+.settings-switch-slider::before {
+  content: ''; position: absolute; width: 20px; height: 20px;
+  left: 2px; bottom: 2px; background: #fff; border-radius: 50%;
+  transition: transform 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.settings-switch input:checked + .settings-switch-slider { background: #4a9f6b; }
+.settings-switch input:checked + .settings-switch-slider::before { transform: translateX(20px); }
+
+.settings-footer {
+  text-align: center; padding: 24px 16px; font-size: 12px; color: #c8bfb5;
+}

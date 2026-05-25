@@ -50,3 +50,123 @@
 
 /* Leaflet custom marker override */
 .custom-marker { background: none !important; border: none !important; }
+
+/* Spot Detail Bottom Sheet */
+.spot-detail-mask {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200;
+  opacity: 0; transition: opacity 0.25s; pointer-events: none;
+}
+.spot-detail-mask.show { opacity: 1; pointer-events: auto; }
+.spot-detail-sheet {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%);
+  max-width: 430px; width: 100%; max-height: 80vh;
+  background: #fff; border-radius: 18px 18px 0 0;
+  z-index: 201; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.spot-detail-sheet.show { transform: translateX(-50%) translateY(0); }
+
+.spot-detail-header {
+  padding: 20px 16px 16px; position: relative; flex-shrink: 0;
+}
+.spot-detail-header .sd-category {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 3px 10px;
+  border-radius: 12px; margin-bottom: 8px;
+}
+.spot-detail-header .sd-category.palace { background: #fde8e8; color: #b8322a; }
+.spot-detail-header .sd-category.nature { background: #e0f0e4; color: #2d5a3d; }
+.spot-detail-header .sd-category.heritage { background: #e0eaf5; color: #4a7dbd; }
+.spot-detail-header .sd-name { font-size: 20px; font-weight: 700; color: #1a1008; margin-bottom: 8px; }
+.spot-detail-header .sd-rating-row {
+  display: flex; align-items: center; gap: 16px; font-size: 13px; color: #6b5e52;
+}
+.spot-detail-header .sd-rating-row svg { vertical-align: -2px; }
+.spot-detail-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: #f5f0eb; color: #6b5e52; font-size: 18px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.spot-detail-close:active { background: #ede8e2; }
+
+.spot-detail-body {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 0 16px 20px;
+}
+.spot-detail-body .sd-desc {
+  font-size: 14px; line-height: 1.8; color: #3d3028; margin-bottom: 16px;
+}
+.sd-info-list { display: flex; flex-direction: column; gap: 10px; }
+.sd-info-item {
+  display: flex; gap: 10px; padding: 12px; background: #faf8f5; border-radius: 10px;
+}
+.sd-info-item .sd-info-icon {
+  width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.sd-info-item .sd-info-icon.time { background: #fef5e8; color: #c4863a; }
+.sd-info-item .sd-info-icon.ticket { background: #e8f0f8; color: #4a7fb5; }
+.sd-info-item .sd-info-icon.tips { background: #e8f5ee; color: #4a9f6b; }
+.sd-info-item .sd-info-text { flex: 1; }
+.sd-info-item .sd-info-label { font-size: 11px; color: #a09080; margin-bottom: 2px; }
+.sd-info-item .sd-info-value { font-size: 13px; color: #3d3028; }
+
+.spot-detail-footer {
+  padding: 12px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom));
+  border-top: 1px solid #ede8e2; flex-shrink: 0;
+}
+.spot-detail-footer .sd-nav-btn {
+  width: 100%; padding: 13px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg, #b8322a, #942820); color: #fff;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(184,50,42,0.3);
+}
+.spot-detail-footer .sd-nav-btn:active { opacity: 0.9; }
+
+/* Spot Image Carousel */
+.sd-carousel {
+  position: relative; width: 100%; overflow: hidden; border-radius: 12px;
+  margin-bottom: 12px; aspect-ratio: 16/10; background: #f5f0eb;
+}
+.sd-carousel-track {
+  display: flex; transition: transform 0.4s ease; height: 100%;
+}
+.sd-carousel-slide {
+  min-width: 100%; height: 100%; flex-shrink: 0;
+}
+.sd-carousel-slide img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.sd-carousel-dots {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 6px;
+}
+.sd-carousel-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5);
+  transition: background 0.3s;
+}
+.sd-carousel-dot.active { background: #fff; width: 16px; border-radius: 3px; }
+
+/* Custom Route Panel */
+.custom-route-panel { margin-top: 12px; }
+.custom-route-title { font-size: 13px; color: #6b5e52; margin-bottom: 10px; font-weight: 600; }
+.custom-spot-list { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
+.custom-spot-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  background: #faf8f5; border-radius: 10px; cursor: pointer; transition: background 0.2s;
+}
+.custom-spot-item.selected { background: #f0e8dd; }
+.custom-spot-check {
+  width: 20px; height: 20px; border-radius: 50%; border: 2px solid #d4c8bc;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #fff; flex-shrink: 0; transition: all 0.2s;
+}
+.custom-spot-item.selected .custom-spot-check { background: #b8322a; border-color: #b8322a; }
+.custom-spot-name { flex: 1; font-size: 13px; color: #1a1008; font-weight: 500; }
+.custom-spot-dur { font-size: 11px; color: #a09080; }
+.custom-route-confirm {
+  margin-top: 12px; width: 100%; padding: 11px; border: none; border-radius: 10px;
+  background: linear-gradient(135deg, #b8322a, #942820); color: #fff;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+}

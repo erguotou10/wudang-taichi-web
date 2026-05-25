@@ -4,6 +4,22 @@
 import { moves, routines } from '../mock-data.js';
 import { starsText, showToast } from '../utils.js';
 
+const STORAGE_KEY_PROGRESS = 'wudang_move_progress';
+
+function getMoveProgress() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || '{}'); } catch { return {}; }
+}
+
+function getMoveStatus(moveId) {
+  const progress = getMoveProgress();
+  return progress[moveId] || 'not_started';
+}
+
+function getCompletedCount() {
+  const progress = getMoveProgress();
+  return Object.values(progress).filter(s => s === 'completed').length;
+}
+
 let viewMode = 'grid'; // grid | routine
 
 // 招式首字配色
@@ -21,7 +37,7 @@ const gridStyles = [
 
 export function renderTeachIndex(container) {
   viewMode = 'grid';
-  const completedCount = 6;
+  const completedCount = getCompletedCount();
 
   container.innerHTML = `
     <div class="page active" id="page-teach">
@@ -91,10 +107,8 @@ function renderMoveGrid() {
   const el = document.getElementById('move-grid');
   if (!el) return;
 
-  const statuses = ['completed', 'completed', 'completed', 'completed', 'completed', 'completed', 'learning', 'not_started', 'not_started'];
-
   el.innerHTML = moves.map((m, i) => {
-    const status = statuses[i] || 'not_started';
+    const status = getMoveStatus(m._id);
     const style = gridStyles[i] || gridStyles[0];
     const badge = status === 'completed' ? '<span class="grid-badge completed">✓</span>'
       : status === 'learning' ? '<span class="grid-badge learning">学习中</span>'
@@ -126,11 +140,10 @@ function renderRoutineList() {
   const el = document.getElementById('routine-list');
   if (!el) return;
 
-  const statuses = ['completed', 'completed', 'completed', 'completed', 'completed', 'completed', 'learning', 'not_started', 'not_started'];
   const statusLabels = { completed: '已学', learning: '学习中', not_started: '未学' };
 
   el.innerHTML = moves.map((m, i) => {
-    const status = statuses[i] || 'not_started';
+    const status = getMoveStatus(m._id);
     const numContent = status === 'completed' ? '✓' : (i + 1);
 
     return `
@@ -149,6 +162,13 @@ function renderRoutineList() {
   });
 }
 
+const basicTrainingData = {
+  stance: { name: '站桩', desc: '无极桩：两脚与肩同宽，膝微屈，双手环抱于胸前，舌抵上腭，呼吸自然。初练5分钟，逐渐增至30分钟。培养内气，增强体质。' },
+  step: { name: '步法', desc: '太极步法：前进、后退、横移三种基本步法。要求迈步如猫行，轻起轻落，虚实分明。前进时脚跟先着地，后退时脚尖先着地。' },
+  hand: { name: '手法', desc: '太极八法：掤、捋、挤、按、採、挒、肘、靠。基本手法要求松肩坠肘，力达指尖。掤如水负舟，捋如顺手牵羊。' },
+  body: { name: '身法', desc: '太极身法：立身中正，以腰为轴，上下相随。要求松腰落胯，尾闾中正，含胸拔背。所有动作由腰胯带动，手脚随之而动。' }
+};
+
 function bindEvents(container) {
   container.querySelectorAll('.view-toggle-item').forEach(item => {
     item.addEventListener('click', () => {
@@ -158,4 +178,44 @@ function bindEvents(container) {
       document.getElementById('teach-routine-view').style.display = viewMode === 'routine' ? '' : 'none';
     });
   });
+
+  // 基本功训练点击
+  const basicKeys = ['stance', 'step', 'hand', 'body'];
+  container.querySelectorAll('.basic-item').forEach((item, i) => {
+    item.addEventListener('click', () => {
+      const data = basicTrainingData[basicKeys[i]];
+      if (data) showBasicDetail(data);
+    });
+  });
+}
+
+function showBasicDetail(data) {
+  document.querySelector('.basic-detail-mask')?.remove();
+  document.querySelector('.basic-detail-sheet')?.remove();
+
+  const mask = document.createElement('div');
+  mask.className = 'basic-detail-mask spot-detail-mask show';
+
+  const sheet = document.createElement('div');
+  sheet.className = 'basic-detail-sheet spot-detail-sheet show';
+  sheet.innerHTML = `
+    <div class="spot-detail-header">
+      <div class="sd-name">${data.name}</div>
+      <button class="spot-detail-close" id="basic-close">&times;</button>
+    </div>
+    <div class="spot-detail-body">
+      <div class="sd-desc">${data.desc}</div>
+    </div>
+  `;
+
+  document.body.appendChild(mask);
+  document.body.appendChild(sheet);
+  requestAnimationFrame(() => { mask.classList.add('show'); sheet.classList.add('show'); });
+
+  const close = () => {
+    mask.classList.remove('show'); sheet.classList.remove('show');
+    setTimeout(() => { mask.remove(); sheet.remove(); }, 300);
+  };
+  document.getElementById('basic-close')?.addEventListener('click', close);
+  mask.addEventListener('click', close);
 }

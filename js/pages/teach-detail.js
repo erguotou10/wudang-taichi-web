@@ -1,5 +1,5 @@
 /**
- * 招式详情页 - 3D 演示 + 内容 Tab
+ * 招式详情页 - 视频演示 + 内容 Tab
  */
 import { moves } from '../mock-data.js';
 import { starsText, showToast } from '../utils.js';
@@ -16,11 +16,10 @@ const relatedStyles = [
   { char: '收', grad: 'linear-gradient(135deg, #3d4a5a, #1e2838)', accent: '#6b8b9f' }
 ];
 
-let viewer = null;
+let videoEl = null;
 let currentTab = 'steps';
 let isPlaying = true;
 let playSpeed = 1;
-let currentAngle = 'front';
 let currentMoveId = null;
 
 export function renderTeachDetail(container, params) {
@@ -30,10 +29,10 @@ export function renderTeachDetail(container, params) {
   currentTab = 'steps';
   isPlaying = true;
   playSpeed = 1;
-  currentAngle = 'front';
 
   const stepsList = move.description.split(/[。！]/).filter(s => s.trim());
   const relatedMoves = moves.filter(m => m._id !== id).slice(0, 3);
+  const videoSrc = `assets/videos/${move._id.replace('move_', '')}.mp4`;
 
   container.innerHTML = `
     <div class="page active detail-page" id="page-teach-detail">
@@ -47,22 +46,17 @@ export function renderTeachDetail(container, params) {
         </span>
       </div>
 
-      <div class="model-area" id="model-area">
-        <canvas id="taiji-canvas"></canvas>
-        <div class="model-loading" id="model-loading">
-          <div class="loading-taiji"></div>
-          <span>加载 3D 模型中...</span>
-        </div>
-        <div class="view-angles">
-          <div class="angle-btn ${currentAngle === 'front' ? 'active' : ''}" data-angle="front">正面</div>
-          <div class="angle-btn ${currentAngle === 'side' ? 'active' : ''}" data-angle="side">侧面</div>
-          <div class="angle-btn ${currentAngle === 'top' ? 'active' : ''}" data-angle="top">俯视</div>
+      <div class="video-area" id="video-area">
+        <video id="teach-video" src="${videoSrc}" loop playsinline preload="auto"></video>
+        <div class="video-overlay" id="video-overlay">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)"><polygon points="5,3 19,12 5,21"/></svg>
         </div>
         <div class="play-controls">
           <div class="play-btn" id="play-btn">
-            ${isPlaying
-              ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>'
-              : '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>'}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </div>
+          <div class="video-progress" id="video-progress">
+            <div class="video-progress-bar" id="video-progress-bar"></div>
           </div>
           <div class="speed-btn" id="speed-btn">${playSpeed}x</div>
         </div>
@@ -110,7 +104,7 @@ export function renderTeachDetail(container, params) {
 
   renderTabContent(container);
   bindEvents(container);
-  init3DViewer();
+  initVideo();
 }
 
 function renderTabContent(container) {
@@ -217,23 +211,24 @@ function bindEvents(container) {
     });
   });
 
-  // 视角切换
-  container.querySelectorAll('.angle-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentAngle = btn.dataset.angle;
-      container.querySelectorAll('.angle-btn').forEach(b => b.classList.toggle('active', b === btn));
-      if (viewer) viewer.setViewAngle(currentAngle);
-    });
+  // 视频遮罩点击播放/暂停
+  document.getElementById('video-overlay')?.addEventListener('click', () => {
+    if (!videoEl) return;
+    if (videoEl.paused) {
+      videoEl.play();
+    } else {
+      videoEl.pause();
+    }
   });
 
-  // 播放/暂停
+  // 播放/暂停按钮
   document.getElementById('play-btn')?.addEventListener('click', () => {
-    if (!viewer) return;
-    isPlaying = viewer.togglePlay();
-    const btn = document.getElementById('play-btn');
-    btn.innerHTML = isPlaying
-      ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>'
-      : '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
+    if (!videoEl) return;
+    if (videoEl.paused) {
+      videoEl.play();
+    } else {
+      videoEl.pause();
+    }
   });
 
   // 速度切换
@@ -241,54 +236,117 @@ function bindEvents(container) {
     const speeds = [0.5, 1, 1.5, 2];
     const idx = (speeds.indexOf(playSpeed) + 1) % speeds.length;
     playSpeed = speeds[idx];
-    if (viewer) viewer.setSpeed(playSpeed);
+    if (videoEl) videoEl.playbackRate = playSpeed;
     document.getElementById('speed-btn').textContent = playSpeed + 'x';
   });
 
-  // 收藏
-  let isFavorited = false;
-  document.getElementById('favorite-btn')?.addEventListener('click', () => {
-    isFavorited = !isFavorited;
+  // 进度条点击跳转
+  document.getElementById('video-progress')?.addEventListener('click', (e) => {
+    if (!videoEl || !videoEl.duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    videoEl.currentTime = ratio * videoEl.duration;
+  });
+
+  // 收藏（持久化）
+  const favKey = 'wudang_fav_moves';
+  let favList = (() => { try { return JSON.parse(localStorage.getItem(favKey) || '[]'); } catch { return []; } })();
+  let isFavorited = favList.includes(currentMoveId);
+
+  function updateFavUI() {
     const btn = document.getElementById('favorite-btn');
-    const svg = btn.querySelector('.icon-svg');
+    const svg = btn?.querySelector('.icon-svg');
     if (svg) {
       svg.setAttribute('fill', isFavorited ? '#d4a574' : 'none');
       svg.setAttribute('stroke', isFavorited ? '#d4a574' : 'currentColor');
     }
-    btn.querySelector('.icon-label').textContent = isFavorited ? '已收藏' : '收藏';
-    btn.classList.toggle('active', isFavorited);
+    btn?.querySelector('.icon-label') && (btn.querySelector('.icon-label').textContent = isFavorited ? '已收藏' : '收藏');
+    btn?.classList.toggle('active', isFavorited);
+  }
+  updateFavUI();
+
+  document.getElementById('favorite-btn')?.addEventListener('click', () => {
+    isFavorited = !isFavorited;
+    if (isFavorited) { favList.push(currentMoveId); } else { favList = favList.filter(id => id !== currentMoveId); }
+    localStorage.setItem(favKey, JSON.stringify(favList));
+    updateFavUI();
     showToast(isFavorited ? '已收藏' : '已取消收藏');
   });
 
-  // 加入学习计划
+  // 加入学习计划（持久化）
   document.getElementById('add-plan-btn')?.addEventListener('click', () => {
-    showToast('已加入学习计划');
+    const planKey = 'wudang_plan';
+    let plan = (() => { try { return JSON.parse(localStorage.getItem(planKey) || '[]'); } catch { return []; } })();
+    if (plan.includes(currentMoveId)) {
+      showToast('已在学习计划中');
+    } else {
+      plan.push(currentMoveId);
+      localStorage.setItem(planKey, JSON.stringify(plan));
+      showToast('已加入学习计划');
+    }
   });
 
-  // 开始学习
+  // 开始学习（更新进度）
   document.getElementById('start-learn-btn')?.addEventListener('click', () => {
-    showToast('进入学习模式');
+    const progressKey = 'wudang_move_progress';
+    let progress = (() => { try { return JSON.parse(localStorage.getItem(progressKey) || '{}'); } catch { return {}; } })();
+    const current = progress[currentMoveId] || 'not_started';
+    if (current === 'not_started') {
+      progress[currentMoveId] = 'learning';
+      showToast('开始学习，加油！');
+    } else if (current === 'learning') {
+      progress[currentMoveId] = 'completed';
+      showToast('恭喜完成学习！');
+    } else {
+      showToast('已经学完啦，可以复习巩固');
+    }
+    localStorage.setItem(progressKey, JSON.stringify(progress));
   });
 }
 
-async function init3DViewer() {
-  try {
-    const { TaijiViewer } = await import('../components/taiji-viewer.js');
-    viewer = new TaijiViewer('taiji-canvas');
-    await viewer.init();
-    // 隐藏加载动画
-    const loading = document.getElementById('model-loading');
-    if (loading) loading.style.display = 'none';
-  } catch (err) {
-    console.warn('3D 初始化失败:', err);
-    const loading = document.getElementById('model-loading');
-    if (loading) loading.querySelector('span').textContent = '3D 模型加载失败';
-  }
+function initVideo() {
+  videoEl = document.getElementById('teach-video');
+  if (!videoEl) return;
+
+  const overlay = document.getElementById('video-overlay');
+  const progressBar = document.getElementById('video-progress-bar');
+  const playBtn = document.getElementById('play-btn');
+
+  // 视频可以播放时自动播放
+  videoEl.addEventListener('canplay', () => {
+    videoEl.play().catch(() => {});
+  }, { once: true });
+
+  // 播放状态同步
+  videoEl.addEventListener('play', () => {
+    isPlaying = true;
+    if (overlay) overlay.classList.add('hidden');
+    if (playBtn) {
+      playBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+    }
+  });
+
+  videoEl.addEventListener('pause', () => {
+    isPlaying = false;
+    if (overlay) overlay.classList.remove('hidden');
+    if (playBtn) {
+      playBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
+    }
+  });
+
+  // 进度条更新
+  videoEl.addEventListener('timeupdate', () => {
+    if (progressBar && videoEl.duration) {
+      progressBar.style.width = (videoEl.currentTime / videoEl.duration * 100) + '%';
+    }
+  });
 }
 
 export function destroyTeachDetail() {
-  if (viewer) {
-    viewer.destroy();
-    viewer = null;
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.removeAttribute('src');
+    videoEl.load();
+    videoEl = null;
   }
 }

@@ -1,6 +1,7 @@
 /**
  * 我的页面
  */
+import { moves, badges } from '../mock-data.js';
 import { showToast } from '../utils.js';
 
 const menuSVG = {
@@ -104,13 +105,22 @@ export function renderMine(container) {
 
   container.querySelectorAll('.menu-item').forEach(item => {
     item.addEventListener('click', () => {
-      const labels = {
-        'fav-moves': '招式收藏', 'fav-articles': '文章收藏',
-        'posts': '我的动态', 'plan': '学习计划',
-        'checkin-records': '打卡记录', 'badges': '成就徽章',
-        'notifications': '通知设置', 'cache': '缓存管理', 'about': '关于'
-      };
-      showToast(labels[item.dataset.action] || '功能开发中');
+      const action = item.dataset.action;
+      if (action === 'checkin-records') {
+        location.hash = '#/checkin';
+      } else if (action === 'badges') {
+        location.hash = '#/mine/badges';
+      } else if (action === 'plan') {
+        location.hash = '#/mine/plan';
+      } else if (action === 'fav-moves') {
+        location.hash = '#/mine/favorites';
+      } else if (['notifications', 'cache', 'about'].includes(action)) {
+        location.hash = '#/mine/settings';
+      } else if (action === 'posts') {
+        location.hash = '#/mine/posts';
+      } else {
+        showToast('功能开发中');
+      }
     });
   });
 }
